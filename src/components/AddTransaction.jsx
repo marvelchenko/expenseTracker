@@ -7,18 +7,32 @@ export const AddTransaction = () => {
 
   const { addTransaction } = useContext(GlobalContext);
 
+  const handleSign = (sign) => {
+    // Ensure the amount is a string before manipulating
+    let updatedAmount = amount.toString();
+  
+    if (updatedAmount.startsWith('-') || updatedAmount.startsWith('+')) {
+      // Replace the existing sign with the new sign
+      updatedAmount = sign + updatedAmount.slice(1);
+    } else {
+      // Prepend the new sign
+      updatedAmount = sign + updatedAmount;
+    }
+  
+    setAmount(updatedAmount);
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
-
     const newTransaction = {
       id: Math.floor(Math.random() * 100000000),
       text,
-      amount: +amount,
+      amount: parseFloat(amount),
     };
 
     addTransaction(newTransaction);
     setText(''); // Clear form inputs after submission
-    setAmount(0);
+    setAmount('');
   };
 
   return (
@@ -31,12 +45,13 @@ export const AddTransaction = () => {
             Description
           </label>
           <input
+            required
             type="text"
             name="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Enter text..."
-            className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
+            className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:ring-red-300"
           />
         </div>
 
@@ -44,16 +59,28 @@ export const AddTransaction = () => {
         <div className="flex flex-col space-y-1">
           <label htmlFor="amount" className="text-sm font-medium">
             Amount <br />
-            <span className="text-xs text-gray-500">(negative - expense, positive - income)</span>
+            <div className="flex items-center gap-2">
+            <button type='button' onClick={() => handleSign('+')}
+                className='bg-green-500 text-white px-4 py-4 rounded hover:bg-green-600 transition'> 
+                Income
+              </button>
+              <button type='button' onClick={() => handleSign('-')}
+                className='bg-red-500 text-white px-4 py-4 rounded hover:bg-red-600 transition'> 
+                Expense
+              </button>
+            </div>
           </label>
           <input
-            type="number"
-            name="amount"
+            required
+            type="text"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="Enter amount..."
-            className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
-          />
+            className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:ring-red-300"
+           />
+          <small className="block text-sm mt-1 text-gray-500">
+         Use the buttons to specify the type of transaction.
+        </small>
         </div>
 
         {/* Submit Button */}
