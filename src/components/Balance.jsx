@@ -10,7 +10,7 @@ export const Balance = () => {
   return (
     <div className='text-center my-4'>
         <h4 className='text-lg '>Your Balance</h4>
-        <h1 className='text-4xl font-bold'>#{total}</h1>
+        <h1 className='text-4xl font-bold'>₦{total}</h1>
     </div>
   )
 }
